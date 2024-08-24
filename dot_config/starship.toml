@@ -1,0 +1,24 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = "$directory$character"
+right_format = "$git_branch$git_metrics"
+add_newline = false
+
+[character]
+success_symbol = "[](bg:green fg:prev_bg)[](fg:prev_bg)"
+error_symbol = "[](bg:red fg:prev_bg)[](fg:prev_bg)"
+
+[directory]
+truncation_length = 1
+format = "[ $path ]($style)"
+style = "fg:white bg:black bold"
+
+[git_branch]
+format = "[](fg:purple)[$symbol$branch ]($style)"
+style = "bold fg:black bg:purple"
+
+[git_metrics]
+disabled = false
+format = "([](fg:black bg:prev_bg)([+$added ]($added_style))([-$deleted ]($deleted_style)))"
+added_style = "bold fg:green bg:black"
+deleted_style = "bold fg:red bg:black"
