@@ -2,7 +2,7 @@ return {
   'stevearc/oil.nvim',
   cmd = 'Oil',
   opts = {},
-  event = { 'VimEnter */*,.*', 'BufNew */*,.*' },
+  event = { 'VimEnter', 'BufNew' },
   dependencies = { 'nvim-tree/nvim-web-devicons' },
   keys = {
     {
