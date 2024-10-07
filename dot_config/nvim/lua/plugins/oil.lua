@@ -6,7 +6,7 @@ return {
   dependencies = { 'nvim-tree/nvim-web-devicons' },
   keys = {
     {
-      '<BS>',
+      '<A-d>',
       function()
         require('oil').open()
       end,

@@ -23,7 +23,6 @@ local servers = {
       },
       python = {
         analysis = {
-          -- ignore = { '*' },
           typeCheckingMode = 'off',
         },
       },
@@ -42,9 +41,6 @@ local servers = {
     },
   },
   stylua = {},
-
-  -- Rust
-  ['rust-analyzer'] = {},
 }
 
 return {
@@ -59,14 +55,12 @@ return {
   },
   config = function()
     vim.api.nvim_create_autocmd('LspAttach', {
-      group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = false }),
       callback = function(event)
         local map = function(keys, func, desc)
           vim.keymap.set('n', keys, func, { buffer = event.buf, desc = desc })
         end
 
         local tb = require 'telescope.builtin'
-
         map('gd', tb.lsp_definitions, '[G]oto [D]efinition')
         map('gr', tb.lsp_references, '[G]oto [R]eferences')
         map('gI', tb.lsp_implementations, '[G]oto [I]mplementation')
