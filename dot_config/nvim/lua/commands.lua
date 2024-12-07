@@ -15,3 +15,11 @@ vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
     vim.fn.setpos('.', save_cursor)
   end,
 })
+
+vim.api.nvim_create_user_command('W', function()
+  vim.g.disable_format = true
+  vim.cmd 'w'
+  vim.g.disable_format = false
+end, {
+  desc = 'Save without formatting',
+})
