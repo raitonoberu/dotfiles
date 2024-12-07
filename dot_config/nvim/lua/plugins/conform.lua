@@ -15,7 +15,7 @@ return {
       html = { 'prettier' },
       json = { 'prettier ' },
       fish = { 'fish_indent' },
-      go = { 'gofumpt' },
+      go = { 'gofumpt', 'goimports' },
     },
   },
 }

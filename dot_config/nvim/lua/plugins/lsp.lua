@@ -14,6 +14,7 @@ local servers = {
   },
   gofumpt = {},
   staticcheck = {},
+  goimports = {},
 
   -- Python
   pyright = {

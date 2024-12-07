@@ -12,7 +12,7 @@ return {
       ']t',
       function()
         ---@diagnostic disable-next-line: missing-parameter, missing-fields
-        require('trouble').next { skip_groups = true, jump = true }
+        require('trouble').next { mode = 'diagnostics', skip_groups = true, jump = true }
       end,
       desc = 'Next [t]rouble',
     },
@@ -20,7 +20,7 @@ return {
       '[t',
       function()
         ---@diagnostic disable-next-line: missing-parameter, missing-fields
-        require('trouble').prev { skip_groups = true, jump = true }
+        require('trouble').prev { mode = 'diagnostics', skip_groups = true, jump = true }
       end,
       desc = 'Previous [t]rouble',
     },
