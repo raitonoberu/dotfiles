@@ -1,8 +1,6 @@
-# intagrations
+# integrations
 fzf --fish | source
 direnv hook fish | source
-starship init fish | source
-
 alias cat="bat"
 alias du="dust"
 
@@ -33,6 +31,7 @@ alias ......='cd ../../../../..'
 
 alias cleanup='sudo pacman -Rns (pacman -Qtdq)'
 alias update='sudo pacman -Syu'
+set fish_greeting
 
 # !! and !$
 function __history_previous_command
@@ -56,9 +55,26 @@ end
 bind ! __history_previous_command
 bind '$' __history_previous_command_arguments
 
-# install tmux plugin manager if not already installed
+# theming
+set -x FZF_DEFAULT_OPTS "
+	--color=fg:#908caa,bg:#191724,hl:#ebbcba
+	--color=fg+:#e0def4,bg+:#26233a,hl+:#ebbcba
+	--color=border:#403d52,header:#31748f,gutter:#191724
+	--color=spinner:#f6c177,info:#9ccfd8
+	--color=pointer:#c4a7e7,marker:#eb6f92,prompt:#908caa"
+set -x hydro_color_pwd cyan
+set -x hydro_color_prompt magenta
+set -x hydro_color_git yellow
+set -x hydro_color_duration brblack
+
+# install fisher & plugins
+if not type -q fisher
+    curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source
+    fisher update
+end
+
+# install tmux plugin manager
 if not test -d ~/.tmux/plugins/tpm
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-    clear
     echo "Press '<C-a>I' in tmux to install plugins"
 end

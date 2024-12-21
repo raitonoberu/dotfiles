@@ -61,10 +61,10 @@ return {
           vim.keymap.set('n', keys, func, { buffer = event.buf, desc = desc })
         end
 
-        local tb = require 'telescope.builtin'
-        map('gd', tb.lsp_definitions, '[G]oto [D]efinition')
-        map('gr', tb.lsp_references, '[G]oto [R]eferences')
-        map('gI', tb.lsp_implementations, '[G]oto [I]mplementation')
+        local fzf = require 'fzf-lua'
+        map('gd', fzf.lsp_definitions, '[G]oto [D]efinition')
+        map('gr', fzf.lsp_references, '[G]oto [R]eferences')
+        map('gI', fzf.lsp_implementations, '[G]oto [I]mplementation')
 
         map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
         map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
