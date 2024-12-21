@@ -19,20 +19,12 @@ return {
   },
   keys = {
     {
-      '<C-Space>',
-      function()
-        require('toggleterm').toggle()
-      end,
-      mode = { 'n', 't' },
-      desc = 'Toggle terminal',
-    },
-    {
       '<A-t>',
       function()
         float_term():toggle()
       end,
       mode = { 'n', 't' },
-      desc = 'Toggle floating terminal',
+      desc = '[T]oggle [t]erminal',
     },
   },
 }
