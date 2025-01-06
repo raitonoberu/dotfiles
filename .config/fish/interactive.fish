@@ -3,6 +3,7 @@ fzf --fish | source
 direnv hook fish | source
 alias cat="bat"
 alias du="dust"
+alias lg="lazygit"
 
 set -x EDITOR nvim
 set -x FZF_DEFAULT_COMMAND "fd --type f"
@@ -19,6 +20,9 @@ alias tb='nc termbin.com 9999'
 function backup --argument filename
     cp $filename $filename.bak
 end
+function unbackup --argument filename
+    mv $filename.bak $filename
+end
 
 alias tarnow='tar -acf '
 alias untar='tar -zxvf '
@@ -31,7 +35,7 @@ alias ......='cd ../../../../..'
 
 alias cleanup='sudo pacman -Rns (pacman -Qtdq)'
 alias update='sudo pacman -Syu'
-set fish_greeting
+alias restow='cd ~/dotfiles && stow -R -v --no-folding -t ~ .'
 
 # !! and !$
 function __history_previous_command
@@ -66,6 +70,7 @@ set -x hydro_color_pwd cyan
 set -x hydro_color_prompt magenta
 set -x hydro_color_git yellow
 set -x hydro_color_duration brblack
+set -x fish_greeting
 
 # install fisher & plugins
 if not type -q fisher
