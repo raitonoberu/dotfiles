@@ -5,7 +5,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
-vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
+vim.api.nvim_create_autocmd('BufWritePre', {
   desc = 'Delete trailing whitespace on save',
   callback = function()
     local save_cursor = vim.fn.getpos '.'

@@ -1,7 +1,7 @@
 return {
   'stevearc/conform.nvim',
-  event = { 'BufWritePre' },
-  cmd = { 'ConformInfo' },
+  event = 'BufWritePre',
+  cmd = 'ConformInfo',
   opts = {
     format_on_save = function()
       if not vim.g.disable_format then
