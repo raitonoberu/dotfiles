@@ -21,6 +21,9 @@ return {
       -- dotnet
       'roslyn',
       'netcoredbg',
+
+      -- other
+      'prettier',
     },
     run_on_start = false,
   },

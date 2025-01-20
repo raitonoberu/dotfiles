@@ -6,7 +6,6 @@ return {
       win = { border = 'solid', relative = 'editor' },
     },
     lazygit = {},
-    input = {},
   },
   keys = {
     { '<A-t>', "<cmd>lua require('snacks').terminal.toggle(vim.o.shell)<cr>", mode = { 'n', 't' }, desc = 'Toggle terminal' },
