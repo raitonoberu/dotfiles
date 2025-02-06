@@ -41,8 +41,8 @@ return {
     lua_ls = {},
   },
   keys = {
-    { '<leader>cr', vim.lsp.buf.rename, desc = '[C]ode [R]ename' },
-    { '<leader>ca', vim.lsp.buf.code_action, desc = '[C]ode [A]ction' },
+    { '<leader>r', vim.lsp.buf.rename, desc = '[R]ename' },
+    { '<leader>a', vim.lsp.buf.code_action, desc = '[A]ction' },
   },
   config = function(_, servers)
     local blink = require 'blink.cmp'

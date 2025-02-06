@@ -2,7 +2,6 @@ return {
   'folke/which-key.nvim',
   event = 'VimEnter',
   opts = {
-    { '<leader>c', group = '[C]ode' },
     { '<leader>d', group = '[D]ebug' },
     { '<leader>t', group = '[T]est' },
     { '<leader>s', group = '[S]earch' },
