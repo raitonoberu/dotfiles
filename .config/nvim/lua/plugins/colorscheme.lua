@@ -11,6 +11,10 @@ return {
       RainbowDelimiterBlue = { fg = 'foam' },
       RainbowDelimiterOrange = { fg = 'rose' },
       RainbowDelimiterViolet = { fg = 'iris' },
+
+      LspReferenceText = { underline = true, inherit = false },
+      LspReferenceRead = { underline = true, inherit = false },
+      LspReferenceWrite = { underline = true, inherit = false },
     },
   },
   init = function()

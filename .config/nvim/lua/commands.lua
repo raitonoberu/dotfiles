@@ -16,6 +16,18 @@ vim.api.nvim_create_autocmd('BufWritePre', {
   end,
 })
 
+vim.api.nvim_create_autocmd('User', {
+  desc = 'Handle file renaming by LSP',
+  pattern = 'OilActionsPost',
+  callback = function(event)
+    for _, action in pairs(event.data.actions) do
+      if action.type == 'move' then
+        require('snacks').rename.on_rename_file(action.src_url, action.dest_url)
+      end
+    end
+  end,
+})
+
 vim.api.nvim_create_user_command('W', function()
   vim.g.disable_format = true
   vim.cmd 'w'

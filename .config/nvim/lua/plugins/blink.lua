@@ -6,7 +6,11 @@ return {
   ---@module 'blink.cmp'
   ---@type blink.cmp.Config
   opts = {
-    keymap = { preset = 'default' },
+    keymap = {
+      preset = 'default',
+      ['<C-h>'] = { 'snippet_backward', 'fallback' },
+      ['<C-l>'] = { 'snippet_forward', 'fallback' },
+    },
     sources = {
       default = { 'lsp', 'path', 'snippets', 'buffer', 'lazydev' },
       providers = {

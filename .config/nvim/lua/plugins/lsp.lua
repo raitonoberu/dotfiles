@@ -39,6 +39,8 @@ return {
       },
     },
     lua_ls = {},
+    ts_ls = {},
+    zls = {},
   },
   keys = {
     { '<leader>r', vim.lsp.buf.rename, desc = '[R]ename' },
