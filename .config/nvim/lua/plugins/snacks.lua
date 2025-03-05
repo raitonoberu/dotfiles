@@ -9,7 +9,6 @@ return {
     },
     lazygit = {},
     picker = {},
-    words = { debounce = 400 },
   },
   keys = {
     -- terminal
@@ -30,9 +29,5 @@ return {
     { 'gd', '<cmd>lua Snacks.picker.lsp_definitions()<cr>', desc = '[G]oto [D]efinition' },
     { 'gr', '<cmd>lua Snacks.picker.lsp_references()<cr>', desc = '[G]oto [R]eferences' },
     { 'gi', '<cmd>lua Snacks.picker.lsp_implementations()<cr>', desc = '[G]oto [I]mplementation' },
-
-    -- words
-    { '[[', '<cmd>lua Snacks.words.jump(-vim.v.count1)<cr>', desc = 'Prev Reference', mode = { 'n', 't' } },
-    { ']]', '<cmd>lua Snacks.words.jump(vim.v.count1)<cr>', desc = 'Next Reference', mode = { 'n', 't' } },
   },
 }
