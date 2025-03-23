@@ -14,4 +14,12 @@ return {
     { '<A-4>', '<cmd>Grapple select index=4<cr>', desc = 'Select fourth tag' },
     { '<A-5>', '<cmd>Grapple select index=5<cr>', desc = 'Select fifth tag' },
   },
+  opts = {
+    command = function(path)
+      vim.g.disable_format = true
+      vim.cmd 'silent update'
+      vim.g.disable_format = false
+      vim.cmd.edit(path)
+    end,
+  },
 }
