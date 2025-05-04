@@ -70,6 +70,7 @@ set -x hydro_color_pwd cyan
 set -x hydro_color_prompt magenta
 set -x hydro_color_git yellow
 set -x hydro_color_duration brblack
+set -x fish_color_command blue
 set -x fish_greeting
 
 # install fisher & plugins

@@ -40,7 +40,11 @@ return {
     },
     lua_ls = {},
     ts_ls = {},
-    zls = {},
+    zls = {
+      enable_build_on_save = true,
+      semantic_tokens = 'partial',
+    },
+    clangd = {},
   },
   keys = {
     { '<leader>r', vim.lsp.buf.rename, desc = '[R]ename' },

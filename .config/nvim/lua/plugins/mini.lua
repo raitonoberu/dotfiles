@@ -1,13 +1,15 @@
 return {
   'echasnovski/mini.nvim',
   opts = {
-    ai = { n_lines = 500 },
+    cursorword = {
+      delay = 400,
+    },
   },
   config = function(_, opts)
     require('mini.ai').setup(opts.ai)
-    require('mini.surround').setup(opts.surround)
+    require('mini.diff').setup(opts.diff)
     require('mini.move').setup(opts.move)
     require('mini.comment').setup(opts.comment)
-    require('mini.diff').setup(opts.diff)
+    require('mini.cursorword').setup(opts.cursorword)
   end,
 }
