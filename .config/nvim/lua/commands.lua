@@ -28,6 +28,15 @@ vim.api.nvim_create_autocmd('User', {
   end,
 })
 
+vim.api.nvim_create_autocmd('BufWritePre', {
+  desc = 'Update typescript imports on save',
+  pattern = '*.ts',
+  callback = function()
+    vim.cmd 'TSToolsAddMissingImports sync'
+    vim.cmd 'TSToolsOrganizeImports sync'
+  end,
+})
+
 vim.api.nvim_create_user_command('W', function()
   vim.g.disable_format = true
   vim.cmd 'w'

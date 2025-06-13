@@ -12,6 +12,7 @@ return {
       lua = { 'stylua' },
       python = { 'ruff_fix', 'ruff_format' },
       javascript = { 'prettier' },
+      typescript = { 'prettier' },
       html = { 'prettier' },
       json = { 'prettier ' },
       fish = { 'fish_indent' },

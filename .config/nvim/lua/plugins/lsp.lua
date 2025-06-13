@@ -13,6 +13,18 @@ return {
 
     -- dotnet
     { 'seblj/roslyn.nvim', ft = 'cs', opts = {} },
+
+    -- typescript
+    {
+      'pmizio/typescript-tools.nvim',
+      ft = 'ts',
+      opts = {
+        on_attach = function(client)
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentRangeFormattingProvider = false
+        end,
+      },
+    },
   },
   opts = {
     gopls = {
@@ -39,7 +51,6 @@ return {
       },
     },
     lua_ls = {},
-    ts_ls = {},
     zls = {
       enable_build_on_save = true,
       semantic_tokens = 'partial',
