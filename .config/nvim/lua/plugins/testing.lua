@@ -7,7 +7,7 @@ return {
     'nvim-treesitter/nvim-treesitter',
 
     'fredrikaverpil/neotest-golang',
-    'Issafalcon/neotest-dotnet',
+    'nsidorenco/neotest-vstest',
   },
   keys = {
     { '<leader>tr', '<cmd>Neotest run<cr>', desc = '[T]est [R]un nearest' },
@@ -24,7 +24,7 @@ return {
     return {
       adapters = {
         require 'neotest-golang',
-        require 'neotest-dotnet',
+        require 'neotest-vstest',
       },
     }
   end,
