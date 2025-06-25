@@ -8,7 +8,13 @@ return {
       win = { border = 'solid', relative = 'editor' },
     },
     lazygit = {},
-    picker = {},
+    picker = {
+      sources = {
+        grep = {
+          args = { '--trim' },
+        },
+      },
+    },
   },
   keys = {
     -- terminal
@@ -19,6 +25,7 @@ return {
 
     -- picker
     { '<leader><leader>', '<cmd>lua Snacks.picker.grep()<cr>', desc = '[ ] Live Grep' },
+    -- { '<leader><leader>', '<cmd>lua Snacks.picker.grep({args = {"--trim"}})<cr>', desc = '[ ] Live Grep' },
     { '<leader>sf', '<cmd>lua Snacks.picker.files()<cr>', desc = '[S]earch [F]iles' },
     { '<leader>sw', '<cmd>lua Snacks.picker.grep_word()<cr>', desc = '[S]earch [W]ord', mode = { 'n', 'x' } },
     { '<leader>sr', '<cmd>lua Snacks.picker.resume()<cr>', desc = '[S]earch [R]esume' },
