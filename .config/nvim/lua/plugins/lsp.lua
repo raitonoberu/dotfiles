@@ -20,6 +20,7 @@ return {
       ft = 'ts',
       opts = {
         on_attach = function(client)
+          client.server_capabilities.semanticTokensProvider = false
           client.server_capabilities.documentFormattingProvider = false
           client.server_capabilities.documentRangeFormattingProvider = false
         end,
