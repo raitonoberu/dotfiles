@@ -9,23 +9,34 @@ return {
     },
     lazygit = {},
     picker = {
-      sources = {
-        grep = {
-          args = { '--trim' },
-        },
+      layout = {
+        cycle = false,
+        preset = function()
+          return vim.o.columns >= 150 and 'default' or 'vertical'
+        end,
       },
+      matcher = { frecency = true },
+      formatters = {
+        file = { filename_first = true },
+      },
+      sources = {
+        grep = { args = { '--trim' } },
+      },
+      previewers = {
+        diff = { builtin = false },
+      },
+      jump = { tagstack = true },
     },
   },
   keys = {
     -- terminal
     { '<A-t>', '<cmd>lua Snacks.terminal.toggle(vim.o.shell)<cr>', mode = { 'n', 't' }, desc = 'Toggle terminal' },
 
-    -- lazigit
+    -- lazygit
     { '<A-g>', '<cmd>lua Snacks.lazygit()<cr>', mode = { 'n', 't' }, desc = 'Toggle lazygit' },
 
     -- picker
     { '<leader><leader>', '<cmd>lua Snacks.picker.grep()<cr>', desc = '[ ] Live Grep' },
-    -- { '<leader><leader>', '<cmd>lua Snacks.picker.grep({args = {"--trim"}})<cr>', desc = '[ ] Live Grep' },
     { '<leader>sf', '<cmd>lua Snacks.picker.files()<cr>', desc = '[S]earch [F]iles' },
     { '<leader>sw', '<cmd>lua Snacks.picker.grep_word()<cr>', desc = '[S]earch [W]ord', mode = { 'n', 'x' } },
     { '<leader>sr', '<cmd>lua Snacks.picker.resume()<cr>', desc = '[S]earch [R]esume' },
