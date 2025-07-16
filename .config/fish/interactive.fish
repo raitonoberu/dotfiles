@@ -84,3 +84,9 @@ if not test -d ~/.tmux/plugins/tpm
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
     echo "Press '<C-a>I' in tmux to install plugins"
 end
+
+# cleanup c# code with jetbrains cli tool
+function jbcleanup --argument solution
+    set -l files (git diff HEAD --name-only | grep ".cs" | string join ";")
+    jb cleanupcode $solution --include="$files" --profile="Vostok Full Cleanup" --no-updates --no-build
+end
