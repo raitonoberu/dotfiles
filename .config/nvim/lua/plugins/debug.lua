@@ -2,9 +2,9 @@ return {
   'mfussenegger/nvim-dap',
   dependencies = {
     'nvim-neotest/nvim-nio',
-    { 'rcarriga/nvim-dap-ui', opts = {} },
+    { 'igorlfs/nvim-dap-view', cmd = 'DapViewToggle' },
 
-    { 'leoluz/nvim-dap-go', opts = { delve = { detached = vim.fn.has 'win32' == 0 } } },
+    { 'leoluz/nvim-dap-go', opts = {} },
     { 'nicholasmata/nvim-dap-cs', opts = {} },
   },
   keys = {
@@ -13,15 +13,15 @@ return {
     { '<leader>dv', '<cmd>DapStepOver<cr>', desc = '[D]ebug step o[v]er' },
     { '<leader>do', '<cmd>DapStepOut<cr>', desc = '[D]ebug step [O]ut' },
     { '<leader>db', '<cmd>DapToggleBreakpoint<cr>', desc = '[D]ebug toggle [B]reakpoint' },
-    { '<leader>dr', '<cmd>DapToggleRepl<cr>', desc = '[D]ebug toggle [R]epl' },
-    { '<leader>du', "<cmd>lua require('dapui').toggle()<cr>", desc = '[D]ebug toggle [U]i' },
+    { '<leader>du', '<cmd>DapViewToggle<cr>', desc = '[D]ebug toggle [U]i' },
+    { '<leader>dt', '<cmd>DapTerminate<cr>', desc = '[D]ebug [T]erminate' },
   },
   config = function()
     local dap = require 'dap'
-    local dapui = require 'dapui'
+    local ui = require 'dap-view'
 
-    dap.listeners.after.event_initialized['dapui_config'] = dapui.open
-    dap.listeners.before.event_terminated['dapui_config'] = dapui.close
-    dap.listeners.before.event_exited['dapui_config'] = dapui.close
+    dap.listeners.after.event_initialized['ui'] = ui.open
+    dap.listeners.before.event_terminated['ui'] = ui.close
+    dap.listeners.before.event_exited['ui'] = ui.close
   end,
 }
