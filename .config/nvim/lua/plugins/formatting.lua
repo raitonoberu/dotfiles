@@ -13,6 +13,8 @@ return {
       python = { 'ruff_fix', 'ruff_format' },
       javascript = { 'prettier' },
       typescript = { 'prettier' },
+      javascriptreact = { 'prettier' },
+      typescriptreact = { 'prettier' },
       html = { 'prettier' },
       json = { 'prettier ' },
       fish = { 'fish_indent' },

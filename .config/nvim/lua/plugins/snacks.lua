@@ -26,6 +26,10 @@ return {
         diff = { builtin = false },
       },
       jump = { tagstack = true },
+      exclude = {
+        'node_modules',
+        'dist',
+      },
     },
   },
   keys = {
