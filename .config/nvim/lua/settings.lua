@@ -52,3 +52,6 @@ vim.opt.scrolloff = 8
 
 -- Set highlight on search
 vim.opt.hlsearch = true
+
+-- Show float diagnostic
+vim.diagnostic.config { jump = { float = true } }

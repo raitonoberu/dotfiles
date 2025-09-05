@@ -1,14 +1,22 @@
 local map = vim.keymap.set
 
--- Clear highlight on pressing <Esc> in normal mode
+-- Clear highlight
 map('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
--- Diagnostic keymaps
-map('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
-map('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+-- Diagnostic
+map('n', '[d', function()
+  vim.diagnostic.jump { count = -1 }
+end)
+map('n', ']d', function()
+  vim.diagnostic.jump { count = 1 }
+end)
 
--- Exit terminal mode in the builtin terminal
-map('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+-- Quickfix
+map('n', '[[', '<cmd>cprev<CR>')
+map('n', ']]', '<cmd>cnext<CR>')
+
+-- Exit terminal mode
+map('t', '<Esc><Esc>', '<C-\\><C-n>')
 
 -- Center cursor when scrolling / searching
 map('n', '<C-d>', '<C-d>zz')

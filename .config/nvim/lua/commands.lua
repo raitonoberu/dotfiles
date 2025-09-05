@@ -8,6 +8,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.api.nvim_create_autocmd('BufWritePre', {
   desc = 'Delete trailing whitespace on save',
   callback = function()
+    if vim.g.disable_format then
+      return
+    end
     local save_cursor = vim.fn.getpos '.'
     pcall(function()
       vim.cmd [[%s/\s\+$//e]]
@@ -32,6 +35,9 @@ vim.api.nvim_create_autocmd('BufWritePre', {
   desc = 'Update typescript imports on save',
   pattern = '*.ts',
   callback = function()
+    if vim.g.disable_format then
+      return
+    end
     vim.cmd 'TSToolsAddMissingImports sync'
     vim.cmd 'TSToolsOrganizeImports sync'
   end,

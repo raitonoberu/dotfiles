@@ -3,6 +3,7 @@ return {
   priority = 1000,
   lazy = false,
   ---@type snacks.Config
+
   opts = {
     terminal = {
       win = { border = 'solid', relative = 'editor' },
@@ -42,11 +43,12 @@ return {
     -- picker
     { '<leader><leader>', '<cmd>lua Snacks.picker.grep()<cr>', desc = '[ ] Live Grep' },
     { '<leader>sf', '<cmd>lua Snacks.picker.files()<cr>', desc = '[S]earch [F]iles' },
+    { '<leader>sF', '<cmd>lua Snacks.picker.files({ hidden = true })<cr>', desc = '[S]earch hidden [F]iles' },
     { '<leader>sw', '<cmd>lua Snacks.picker.grep_word()<cr>', desc = '[S]earch [W]ord', mode = { 'n', 'x' } },
     { '<leader>sr', '<cmd>lua Snacks.picker.resume()<cr>', desc = '[S]earch [R]esume' },
     { '<leader>sd', '<cmd>lua Snacks.picker.diagnostics()<cr>', desc = '[S]earch [D]iagnostics' },
     { '<leader>ss', '<cmd>lua Snacks.picker.lsp_symbols()<cr>', desc = '[S]earch [S]ymbols' },
-    { '<leader>sg', '<cmd>lua Snacks.picker.git_diff()<cr>', desc = '[S]earch [G]it diff' },
+    { '<leader>sg', '<cmd>lua Snacks.picker.git_diff()<cr>', desc = '[S]earch [G]it changes' },
     { '<leader>/', '<cmd>lua Snacks.picker.lines()<cr>', desc = '[/] Search Buffer' },
     { 'gd', '<cmd>lua Snacks.picker.lsp_definitions()<cr>', desc = '[G]oto [D]efinition' },
     { 'gr', '<cmd>lua Snacks.picker.lsp_references()<cr>', desc = '[G]oto [R]eferences' },

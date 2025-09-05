@@ -8,10 +8,7 @@ return {
     sections = {
       lualine_b = {
         function()
-          ---@diagnostic disable-next-line: missing-fields
-          return require('grapple').statusline {
-            include_icon = false,
-          }
+          return require('grapple').statusline { include_icon = false }
         end,
       },
       lualine_c = { { 'filename', path = 3 } },
