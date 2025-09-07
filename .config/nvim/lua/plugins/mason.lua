@@ -1,16 +1,13 @@
 return {
-  'WhoIsSethDaniel/mason-tool-installer.nvim',
-  dependencies = {
-    'williamboman/mason.nvim',
-    opts = {
-      registries = {
-        'github:mason-org/mason-registry',
-        'github:Crashdummyy/mason-registry',
-      },
+  'williamboman/mason.nvim',
+  opts = {
+    registries = {
+      'github:mason-org/mason-registry',
+      'github:Crashdummyy/mason-registry',
     },
   },
-  opts = {
-    ensure_installed = {
+  init = function()
+    local required = {
       -- go
       'gopls',
       'gofumpt',
@@ -32,7 +29,9 @@ return {
 
       -- other
       'prettier',
-    },
-    run_on_start = false,
-  },
+    }
+    vim.api.nvim_create_user_command('MasonInstallAll', function()
+      vim.cmd('MasonInstall ' .. table.concat(required, ' '))
+    end, {})
+  end,
 }
