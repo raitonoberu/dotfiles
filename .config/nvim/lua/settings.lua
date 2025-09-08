@@ -54,4 +54,13 @@ vim.opt.scrolloff = 8
 vim.opt.hlsearch = true
 
 -- Show float diagnostic
-vim.diagnostic.config { jump = { float = true } }
+vim.diagnostic.config {
+  jump = { float = true },
+  virtual_text = {
+    severity = { min = vim.diagnostic.severity.WARN },
+  },
+  float = {
+    close_events = { 'CursorMoved', 'BufHidden', 'LspDetach' },
+    focusable = true,
+  },
+}

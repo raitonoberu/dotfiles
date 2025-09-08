@@ -24,7 +24,11 @@ return {
     return {
       adapters = {
         require 'neotest-golang',
-        require 'neotest-vstest',
+        require 'neotest-vstest' {
+          dap_settings = {
+            type = 'coreclr',
+          },
+        },
       },
     }
   end,
