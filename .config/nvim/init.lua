@@ -66,6 +66,7 @@ require('mini.move').setup()
 add { source = 'nvim-lualine/lualine.nvim', depends = { 'nvim-tree/nvim-web-devicons' } }
 require('lualine').setup {
   sections = {
+    lualine_b = {},
     lualine_c = { { 'filename', path = 3 } },
     lualine_x = {},
     lualine_y = { 'branch', 'diff' },
