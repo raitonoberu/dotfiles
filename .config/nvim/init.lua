@@ -66,7 +66,7 @@ require('mini.move').setup()
 add { source = 'nvim-lualine/lualine.nvim', depends = { 'nvim-tree/nvim-web-devicons' } }
 require('lualine').setup {
   sections = {
-    lualine_b = {},
+    lualine_b = { 'diagnostics' },
     lualine_c = { { 'filename', path = 3 } },
     lualine_x = {},
     lualine_y = { 'branch', 'diff' },
@@ -122,14 +122,13 @@ end, {})
 
 vim.api.nvim_create_autocmd('BufWritePre', {
   callback = function()
-    if vim.g.disable_format then
-      return
+    if not vim.g.disable_format then
+      local save_cursor = vim.fn.getpos '.'
+      pcall(function()
+        vim.cmd [[%s/\s\+$//e]]
+      end)
+      vim.fn.setpos('.', save_cursor)
     end
-    local save_cursor = vim.fn.getpos '.'
-    pcall(function()
-      vim.cmd [[%s/\s\+$//e]]
-    end)
-    vim.fn.setpos('.', save_cursor)
   end,
 })
 
@@ -148,7 +147,11 @@ end, {})
 -- snacks
 add 'folke/snacks.nvim'
 require('snacks').setup {
-  picker = {},
+  picker = {
+    sources = {
+      projects = { dev = { '~/projects', '~/cement' } },
+    },
+  },
   lazygit = {},
   terminal = { win = { style = 'float', border = 'solid' } },
 }
@@ -160,6 +163,7 @@ map('n', '<leader>sw', picker.grep_word)
 map('n', '<leader>sr', picker.resume)
 map('n', '<leader>sd', picker.diagnostics)
 map('n', '<leader>sg', picker.git_diff)
+map('n', '<leader>sp', picker.projects)
 map('n', 'gd', picker.lsp_definitions)
 map('n', 'gr', picker.lsp_references)
 map('n', 'gi', picker.lsp_implementations)
@@ -170,7 +174,20 @@ map('t', '<Esc><Esc>', '<C-\\><C-n>')
 
 -- lsp
 add 'neovim/nvim-lspconfig'
+vim.lsp.enable(lsp_servers)
+vim.diagnostic.config {
+  jump = { float = true },
+  virtual_text = {
+    severity = { min = vim.diagnostic.severity.WARN },
+  },
+  float = { close_events = { 'CursorMoved', 'BufHidden', 'LspDetach' } },
+}
+map('n', '<leader>r', vim.lsp.buf.rename)
+map('n', '<leader>a', vim.lsp.buf.code_action)
+
 add 'seblyng/roslyn.nvim'
+require('roslyn').setup { lock_target = true, silent = true }
+
 add { source = 'pmizio/typescript-tools.nvim', depends = { 'nvim-lua/plenary.nvim' } }
 require('typescript-tools').setup {
   on_attach = function(client)
@@ -180,23 +197,11 @@ require('typescript-tools').setup {
   end,
 }
 
-vim.lsp.enable(lsp_servers)
-vim.diagnostic.config {
-  jump = { float = true },
-  virtual_text = {
-    severity = { min = vim.diagnostic.severity.WARN },
-  },
-  float = { close_events = { 'CursorMoved', 'BufHidden', 'LspDetach' } },
-}
-
-map('n', '<leader>r', vim.lsp.buf.rename)
-map('n', '<leader>a', vim.lsp.buf.code_action)
-
 -- blink
 add {
   source = 'saghen/blink.cmp',
   depends = { 'rafamadriz/friendly-snippets' },
-  checkout = 'v1.6.0',
+  checkout = 'v1.7.0',
 }
 require('blink.cmp').setup {
   keymap = {
@@ -267,10 +272,6 @@ require('nvim-autopairs').setup()
 add 'yorickpeterse/nvim-pqf'
 require('pqf').setup()
 
--- todo comments
-add { source = 'folke/todo-comments.nvim', depends = { 'nvim-lua/plenary.nvim' } }
-require('todo-comments').setup()
-
 -- misc mappings
 map('n', '<Esc>', '<cmd>nohlsearch<CR>')
 map('n', '<C-d>', '<C-d>zz')
@@ -281,6 +282,8 @@ map({ 'n', 'x' }, '<leader>d', [["_d]])
 map('x', '<leader>p', [["_dP]])
 map({ 'n', 'x' }, '<leader>y', [["+y]])
 map('n', '<leader>Y', [["+Y]])
+map('n', '[v', '`<')
+map('n', ']v', '`>')
 
 -- misc settings
 vim.opt.relativenumber = true
