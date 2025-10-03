@@ -18,7 +18,7 @@ install-base:
 		tree-sitter-cli
 
 cleanup:
-	sudo pacman -Rns (pacman -Qtdq)
+	sudo pacman -Rns $(pacman -Qtdq)
 
 [no-cd]
 jb-cleanup:
