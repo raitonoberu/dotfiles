@@ -13,7 +13,7 @@ alias ls='eza --color=always --group-directories-first --icons'
 alias la='eza -a --color=always --group-directories-first --icons'
 alias ll='eza -l --color=always --group-directories-first --icons'
 
-alias tarx='tar -acf '
+alias tarnew='tar -acf '
 alias untar='tar -zxvf '
 
 alias ..='cd ..'
@@ -34,9 +34,4 @@ set -x fish_greeting
 if not type -q fisher
     curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source
     fisher update
-end
-
-if not test -d ~/.tmux/plugins/tpm
-    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-    echo "Press '<C-a>I' in tmux to install plugins"
 end
