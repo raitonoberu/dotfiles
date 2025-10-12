@@ -32,13 +32,7 @@ local formatters = {
 
 local mini_path = vim.fn.stdpath 'data' .. '/site/pack/deps/start/mini.nvim'
 if not vim.uv.fs_stat(mini_path) then
-  vim.fn.system {
-    'git',
-    'clone',
-    '--filter=blob:none',
-    'https://github.com/nvim-mini/mini.nvim',
-    mini_path,
-  }
+  vim.fn.system { 'git', 'clone', '--filter=blob:none', 'https://github.com/nvim-mini/mini.nvim', mini_path }
   vim.cmd 'packadd mini.nvim'
 end
 require('mini.deps').setup()
@@ -86,7 +80,7 @@ require('treesitter-modules').setup {
 add 'stevearc/oil.nvim'
 require('oil').setup {
   watch_for_changes = true,
-  keymaps = { ['<C-l>'] = false, ['<C-t>'] = false },
+  keymaps = { ['<C-l>'] = false, ['<C-h>'] = false, ['<C-t>'] = false },
   view_options = { show_hidden = true },
 }
 map('n', '<A-d>', '<cmd>Oil<CR>')
@@ -97,6 +91,7 @@ local harpoon = require 'harpoon-core'
 harpoon.setup()
 map('n', '<leader><Tab>', harpoon.add_file)
 map('n', '<Tab>', harpoon.toggle_quick_menu)
+map('n', '<C-i>', '<C-i>')
 for i = 1, 5 do
   map('n', '<A-' .. i .. '>', function()
     harpoon.nav_file(i)
@@ -151,6 +146,7 @@ require('snacks').setup {
     sources = {
       projects = { dev = { '~/projects', '~/cement' } },
     },
+    jump = { tagstack = true },
   },
   lazygit = {},
   terminal = { win = { style = 'float', border = 'solid' } },
@@ -170,7 +166,6 @@ map('n', 'gi', picker.lsp_implementations)
 
 map({ 'n', 't' }, '<A-g>', Snacks.lazygit.open)
 map({ 'n', 't' }, '<A-t>', Snacks.terminal.toggle)
-map('t', '<Esc><Esc>', '<C-\\><C-n>')
 
 -- lsp
 add 'neovim/nvim-lspconfig'
@@ -281,7 +276,6 @@ map('n', 'N', 'Nzzzv')
 map({ 'n', 'x' }, '<leader>d', [["_d]])
 map('x', '<leader>p', [["_dP]])
 map({ 'n', 'x' }, '<leader>y', [["+y]])
-map('n', '<leader>Y', [["+Y]])
 map('n', '[v', '`<')
 map('n', ']v', '`>')
 
