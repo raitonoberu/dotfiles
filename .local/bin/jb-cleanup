@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+profile="Vostok Full Cleanup"
+include=$(git diff HEAD --name-only | grep '.cs' | paste -sd';')
+sln=$(ls *.sln | head -n 1)
+
+jb cleanupcode $sln --include="$include" --profile="$profile" --no-updates --no-build

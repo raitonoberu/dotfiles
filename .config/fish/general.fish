@@ -9,5 +9,4 @@ if test -f ~/.fish_profile
 end
 
 add_path ~/.local/bin
-add_path ~/.rye/shims
 add_path ~/go/bin
