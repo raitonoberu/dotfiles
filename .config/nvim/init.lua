@@ -1,35 +1,3 @@
-local mason_packages = {
-  'delve',
-  'gofumpt',
-  'goimports',
-  'gopls',
-  'lua-language-server',
-  'netcoredbg',
-  'prettier',
-  'pyright',
-  'roslyn',
-  'ruff',
-  'stylua',
-}
-
-local lsp_servers = {
-  'gopls',
-  'lua_ls',
-  'pyright',
-}
-
-local formatters = {
-  go = { 'gofumpt', 'goimports' },
-  html = { 'prettier' },
-  javascript = { 'prettier' },
-  javascriptreact = { 'prettier' },
-  json = { 'prettier ' },
-  lua = { 'stylua' },
-  python = { 'ruff_fix', 'ruff_format' },
-  typescript = { 'prettier' },
-  typescriptreact = { 'prettier' },
-}
-
 local mini_path = vim.fn.stdpath 'data' .. '/site/pack/deps/start/mini.nvim'
 if not vim.uv.fs_stat(mini_path) then
   vim.fn.system { 'git', 'clone', '--filter=blob:none', 'https://github.com/nvim-mini/mini.nvim', mini_path }
@@ -106,7 +74,17 @@ require('conform').setup {
       return { lsp_format = 'fallback', timeout_ms = 500 }
     end
   end,
-  formatters_by_ft = formatters,
+  formatters_by_ft = {
+    lua = { 'stylua' },
+    go = { 'gofumpt', 'goimports' },
+    python = { 'ruff_fix', 'ruff_format' },
+    json = { 'prettier ' },
+    html = { 'prettier' },
+    typescript = { 'prettier' },
+    typescriptreact = { 'prettier' },
+    javascript = { 'prettier' },
+    javascriptreact = { 'prettier' },
+  },
 }
 
 vim.api.nvim_create_user_command('W', function()
@@ -136,7 +114,20 @@ require('mason').setup {
   },
 }
 vim.api.nvim_create_user_command('MasonInstallAll', function()
-  vim.cmd('MasonInstall ' .. table.concat(mason_packages, ' '))
+  local packages = {
+    'lua-language-server',
+    'stylua',
+    'gopls',
+    'gofumpt',
+    'goimports',
+    'prettier',
+    'delve',
+    'netcoredbg',
+    'roslyn',
+    'pyright',
+    'ruff',
+  }
+  vim.cmd('MasonInstall ' .. table.concat(packages, ' '))
 end, {})
 
 -- snacks
@@ -165,7 +156,7 @@ map({ 'n', 't' }, '<A-t>', Snacks.terminal.toggle)
 
 -- lsp
 add 'neovim/nvim-lspconfig'
-vim.lsp.enable(lsp_servers)
+vim.lsp.enable { 'gopls', 'lua_ls', 'pyright' }
 vim.diagnostic.config {
   jump = { float = true },
   virtual_text = {
@@ -191,10 +182,13 @@ require('typescript-tools').setup {
 -- blink
 add {
   source = 'saghen/blink.cmp',
-  depends = { 'rafamadriz/friendly-snippets' },
+  depends = {
+    { source = 'L3MON4D3/LuaSnip', checkout = 'v2.4.0' },
+  },
   checkout = 'v1.7.0',
 }
 require('blink.cmp').setup {
+  snippets = { preset = 'luasnip' },
   keymap = {
     ['<C-h>'] = { 'snippet_backward', 'fallback' },
     ['<C-l>'] = { 'snippet_forward', 'fallback' },
@@ -203,6 +197,7 @@ require('blink.cmp').setup {
   signature = { enabled = true },
   appearance = { nerd_font_variant = 'normal' },
 }
+require('luasnip.loaders.from_lua').load { paths = '~/.config/nvim/snippets' }
 
 -- tests
 add {
