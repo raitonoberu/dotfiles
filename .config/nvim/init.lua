@@ -143,9 +143,6 @@ end, {})
 add 'folke/snacks.nvim'
 require('snacks').setup {
   picker = {
-    sources = {
-      projects = { dev = { '~/projects', '~/cement' } },
-    },
     jump = { tagstack = true },
   },
   lazygit = {},
@@ -159,7 +156,6 @@ map('n', '<leader>sw', picker.grep_word)
 map('n', '<leader>sr', picker.resume)
 map('n', '<leader>sd', picker.diagnostics)
 map('n', '<leader>sg', picker.git_diff)
-map('n', '<leader>sp', picker.projects)
 map('n', 'gd', picker.lsp_definitions)
 map('n', 'gr', picker.lsp_references)
 map('n', 'gi', picker.lsp_implementations)
