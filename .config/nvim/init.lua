@@ -197,7 +197,10 @@ require('blink.cmp').setup {
   signature = { enabled = true },
   appearance = { nerd_font_variant = 'normal' },
 }
+
 require('luasnip.loaders.from_lua').load { paths = '~/.config/nvim/snippets' }
+map({ 'i', 's' }, '<C-n>', '<Plug>luasnip-next-choice')
+map({ 'i', 's' }, '<C-p>', '<Plug>luasnip-prev-choice')
 
 -- tests
 add {
