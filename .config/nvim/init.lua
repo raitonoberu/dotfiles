@@ -84,6 +84,7 @@ require('conform').setup {
     typescriptreact = { 'prettier' },
     javascript = { 'prettier' },
     javascriptreact = { 'prettier' },
+    cs = { 'csharpier' },
   },
 }
 
@@ -124,6 +125,7 @@ vim.api.nvim_create_user_command('MasonInstallAll', function()
     'delve',
     'netcoredbg',
     'roslyn',
+    'csharpier',
     'pyright',
     'ruff',
   }
