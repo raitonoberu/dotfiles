@@ -84,7 +84,7 @@ require('conform').setup {
     typescriptreact = { 'prettier' },
     javascript = { 'prettier' },
     javascriptreact = { 'prettier' },
-    cs = { 'csharpier' },
+    -- cs = { 'csharpier' },
   },
 }
 
