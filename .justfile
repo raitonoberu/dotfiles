@@ -1,7 +1,7 @@
 stow:
 	stow -R -v --no-folding -d ~/dotfiles -t ~ .
 
-pacman-install:
+install-base:
 	sudo pacman -Sy --needed \
 		bat \
 		direnv \
@@ -10,9 +10,11 @@ pacman-install:
 		fd \
 		fish \
 		fzf \
-		git-delta \
+		mergiraf \
+		difftastic \
 		lazygit \
 		neovim \
+		tmux \
 		ripgrep \
 		stow \
 		tree-sitter-cli

@@ -5,14 +5,22 @@ email = raitonoberu@mail.ru
 [url "git@github.com:"]
 insteadOf = https://github.com/
 
+[url "git@git.skbkontur.ru:"]
+insteadOf = https://git.skbkontur.ru/
+
 [push]
 followTags = true
+autoSetupRemote = true
 
 [core]
-pager = delta
+attributesfile = ~/.gitattributes
 
-[interactive]
-diffFilter = delta --color-only
+[diff]
+external = difft
 
 [merge]
-conflictstyle = zdiff3
+conflictstyle = diff3
+
+[merge "mergiraf"]
+name = mergiraf
+driver = mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P -l %L
