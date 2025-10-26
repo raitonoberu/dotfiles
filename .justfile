@@ -10,6 +10,7 @@ install-base:
 		fd \
 		fish \
 		fzf \
+		git-delta \
 		mergiraf \
 		difftastic \
 		lazygit \

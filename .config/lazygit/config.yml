@@ -1,0 +1,10 @@
+gui:
+  showRandomTip: false
+  nerdFontsVersion: 3
+  border: single
+  mouseEvents: false
+
+git:
+  paging:
+    colorArg: always
+    pager: delta --paging=never
