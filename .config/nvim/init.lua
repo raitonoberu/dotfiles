@@ -1,3 +1,5 @@
+vim.loader.enable()
+
 local mini_path = vim.fn.stdpath 'data' .. '/site/pack/deps/start/mini.nvim'
 if not vim.uv.fs_stat(mini_path) then
   vim.fn.system { 'git', 'clone', '--filter=blob:none', 'https://github.com/nvim-mini/mini.nvim', mini_path }
@@ -159,13 +161,6 @@ map({ 'n', 't' }, '<A-t>', Snacks.terminal.toggle)
 -- lsp
 add 'neovim/nvim-lspconfig'
 vim.lsp.enable { 'gopls', 'lua_ls', 'pyright' }
-vim.diagnostic.config {
-  jump = { float = true },
-  virtual_text = {
-    severity = { min = vim.diagnostic.severity.WARN },
-  },
-  float = { close_events = { 'CursorMoved', 'BufHidden', 'LspDetach' } },
-}
 map('n', '<leader>r', vim.lsp.buf.rename)
 map('n', '<leader>a', vim.lsp.buf.code_action)
 
@@ -203,6 +198,11 @@ require('blink.cmp').setup {
 require('luasnip.loaders.from_lua').load { paths = '~/.config/nvim/snippets' }
 map({ 'i', 's' }, '<C-n>', '<Plug>luasnip-next-choice')
 map({ 'i', 's' }, '<C-p>', '<Plug>luasnip-prev-choice')
+
+-- diagnostics
+add 'rachartier/tiny-inline-diagnostic.nvim'
+require('tiny-inline-diagnostic').setup()
+vim.diagnostic.config { virtual_text = false }
 
 -- tests
 add {
@@ -262,6 +262,11 @@ require('nvim-autopairs').setup()
 -- quickfix
 add 'yorickpeterse/nvim-pqf'
 require('pqf').setup()
+
+-- find & replace
+add 'MagicDuck/grug-far.nvim'
+require('grug-far').setup()
+map('n', '<leader>R', '<cmd>GrugFar<cr>')
 
 -- misc mappings
 map('n', '<Esc>', '<cmd>nohlsearch<CR>')

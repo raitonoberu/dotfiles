@@ -2,7 +2,7 @@
 local tab = '    '
 
 return {
-  s('cls', { -- class
+  s('class', { -- class
     i(1, 'public'),
     t ' class ',
     sn(nil, { p(vim.fn.expand, '%:t:r') }, { key = 'name' }),
@@ -13,6 +13,15 @@ return {
     t { '>();', '', tab },
     i(0),
     t { '', '}' },
+  }),
+
+  s('record', { -- record
+    i(1, 'public'),
+    t ' record ',
+    p(vim.fn.expand, '%:t:r'),
+    t { '(', tab },
+    i(0),
+    t { '', ');' },
   }),
 
   s('method', { -- method
