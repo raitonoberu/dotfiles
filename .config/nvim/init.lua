@@ -31,11 +31,21 @@ add { source = 'nvim-lualine/lualine.nvim', depends = { 'nvim-tree/nvim-web-devi
 require('lualine').setup {
   sections = {
     lualine_b = { 'diagnostics' },
-    lualine_c = { { 'filename', path = 3 } },
-    lualine_x = {},
-    lualine_y = { 'branch', 'diff' },
+    lualine_c = { 'filename' },
+    lualine_x = { 'branch' },
+    lualine_y = { 'diff' },
+  },
+  options = {
+    component_separators = '',
+    section_separators = '',
   },
 }
+add 'vimpostor/vim-tpipeline'
+if vim.env.TMUX then
+  vim.defer_fn(function()
+    vim.o.laststatus = 0
+  end, 0)
+end
 
 -- treesitter
 add { source = 'nvim-treesitter/nvim-treesitter', checkout = 'main' }
@@ -80,13 +90,12 @@ require('conform').setup {
     lua = { 'stylua' },
     go = { 'gofumpt', 'goimports' },
     python = { 'ruff_fix', 'ruff_format' },
-    json = { 'prettier ' },
-    html = { 'prettier' },
-    typescript = { 'prettier' },
-    typescriptreact = { 'prettier' },
-    javascript = { 'prettier' },
-    javascriptreact = { 'prettier' },
-    -- cs = { 'csharpier' },
+    json = { 'prettierd' },
+    html = { 'prettierd' },
+    typescript = { 'prettierd' },
+    typescriptreact = { 'prettierd' },
+    javascript = { 'prettierd' },
+    javascriptreact = { 'prettierd' },
   },
 }
 
@@ -123,11 +132,10 @@ vim.api.nvim_create_user_command('MasonInstallAll', function()
     'gopls',
     'gofumpt',
     'goimports',
-    'prettier',
+    'prettierd',
     'delve',
     'netcoredbg',
     'roslyn',
-    'csharpier',
     'pyright',
     'ruff',
   }
@@ -139,6 +147,7 @@ add 'folke/snacks.nvim'
 require('snacks').setup {
   picker = {
     jump = { tagstack = true },
+    layout = { preset = 'vertical' },
   },
   lazygit = {},
   terminal = { win = { style = 'float', border = 'solid' } },
@@ -279,6 +288,8 @@ map('x', '<leader>p', [["_dP]])
 map({ 'n', 'x' }, '<leader>y', [["+y]])
 map('n', '[v', '`<')
 map('n', ']v', '`>')
+map('i', '<C-h>', '<C-o>^')
+map('i', '<C-l>', '<C-o>$')
 
 -- misc settings
 vim.opt.relativenumber = true
