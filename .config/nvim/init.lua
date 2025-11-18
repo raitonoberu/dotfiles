@@ -18,7 +18,6 @@ vim.cmd.colorscheme 'rose-pine'
 add 'nvim-mini/mini.nvim'
 require('mini.ai').setup()
 require('mini.basics').setup { mappings = { windows = true } }
-require('mini.clue').setup()
 require('mini.comment').setup()
 require('mini.cursorword').setup { delay = 400 }
 require('mini.diff').setup()
@@ -150,7 +149,9 @@ require('snacks').setup {
     layout = { preset = 'vertical' },
   },
   lazygit = {},
-  terminal = { win = { style = 'float', border = 'solid' } },
+  terminal = {
+    win = { style = 'float', border = 'solid' },
+  },
 }
 
 local picker = Snacks.picker
@@ -189,9 +190,9 @@ require('typescript-tools').setup {
 add {
   source = 'saghen/blink.cmp',
   depends = {
-    { source = 'L3MON4D3/LuaSnip', checkout = 'v2.4.0' },
+    { source = 'L3MON4D3/LuaSnip', checkout = 'v2.4.1' },
   },
-  checkout = 'v1.7.0',
+  checkout = 'v1.8.0',
 }
 require('blink.cmp').setup {
   snippets = { preset = 'luasnip' },
@@ -274,13 +275,12 @@ require('pqf').setup()
 
 -- find & replace
 add 'MagicDuck/grug-far.nvim'
-require('grug-far').setup()
 map('n', '<leader>R', '<cmd>GrugFar<cr>')
 
 -- misc mappings
 map('n', '<Esc>', '<cmd>nohlsearch<CR>')
-map('n', '<C-d>', '<C-d>zz')
-map('n', '<C-u>', '<C-u>zz')
+map({ 'n', 'x' }, '<C-d>', '<C-d>zz')
+map({ 'n', 'x' }, '<C-u>', '<C-u>zz')
 map('n', 'n', 'nzzzv')
 map('n', 'N', 'Nzzzv')
 map({ 'n', 'x' }, '<leader>d', [["_d]])
