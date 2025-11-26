@@ -30,7 +30,7 @@ add { source = 'nvim-lualine/lualine.nvim', depends = { 'nvim-tree/nvim-web-devi
 require('lualine').setup {
   sections = {
     lualine_b = { 'diagnostics' },
-    lualine_c = { 'filename' },
+    lualine_c = { { 'filename', path = 3 } },
     lualine_x = { 'branch' },
     lualine_y = { 'diff' },
   },
@@ -39,12 +39,6 @@ require('lualine').setup {
     section_separators = '',
   },
 }
-add 'vimpostor/vim-tpipeline'
-if vim.env.TMUX then
-  vim.defer_fn(function()
-    vim.o.laststatus = 0
-  end, 0)
-end
 
 -- treesitter
 add { source = 'nvim-treesitter/nvim-treesitter', checkout = 'main' }
