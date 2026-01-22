@@ -2,15 +2,22 @@
 local tab = '    '
 
 return {
+  s('namespace', {
+    t 'namespace ',
+    f(function()
+      return 'TODO'
+    end),
+    t { ';', '' },
+    i(0),
+  }),
+
   s('class', { -- class
     i(1, 'public'),
     t ' class ',
     sn(nil, { p(vim.fn.expand, '%:t:r') }, { key = 'name' }),
-    t '(ILog log',
+    t '(',
     i(2),
-    t { ')', '{', tab .. 'private readonly ILog log = log.ForContext<' },
-    rep(k 'name'),
-    t { '>();', '', tab },
+    t { ')', '{', tab },
     i(0),
     t { '', '}' },
   }),
@@ -33,6 +40,19 @@ return {
     t '(',
     i(4),
     t { ')', '{', tab },
+    i(0),
+    t { '', '}' },
+  }),
+
+  s('service', { -- service
+    i(1, 'public'),
+    t ' class ',
+    sn(nil, { p(vim.fn.expand, '%:t:r') }, { key = 'name' }),
+    t '(ILog log',
+    i(2),
+    t { ')', '{', tab .. 'private readonly ILog log = log.ForContext<' },
+    rep(k 'name'),
+    t { '>();', '', tab },
     i(0),
     t { '', '}' },
   }),

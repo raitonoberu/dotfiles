@@ -12,7 +12,6 @@ install-base:
 		fzf \
 		git-delta \
 		mergiraf \
-		difftastic \
 		lazygit \
 		neovim \
 		tmux \

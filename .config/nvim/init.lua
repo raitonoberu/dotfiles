@@ -11,7 +11,14 @@ local add = MiniDeps.add
 local map = vim.keymap.set
 
 -- colorscheme
+add 'nvim-tree/nvim-web-devicons'
 add { source = 'rose-pine/neovim', name = 'rose-pine' }
+require('rose-pine').setup {
+  highlight_groups = {
+    StatusLine = { fg = 'rose', bg = 'rose', blend = 10 },
+    StatusLineNC = { fg = 'subtle', bg = 'surface' },
+  },
+}
 vim.cmd.colorscheme 'rose-pine'
 
 -- mini
@@ -26,19 +33,8 @@ require('mini.jump').setup()
 require('mini.move').setup()
 
 -- statusline
-add { source = 'nvim-lualine/lualine.nvim', depends = { 'nvim-tree/nvim-web-devicons' } }
-require('lualine').setup {
-  sections = {
-    lualine_b = { 'diagnostics' },
-    lualine_c = { { 'filename', path = 3 } },
-    lualine_x = { 'branch' },
-    lualine_y = { 'diff' },
-  },
-  options = {
-    component_separators = '',
-    section_separators = '',
-  },
-}
+vim.opt.laststatus = 2
+vim.opt.statusline = ' %{expand("%:.")} %m %= %l:%c ♥  '
 
 -- treesitter
 add { source = 'nvim-treesitter/nvim-treesitter', checkout = 'main' }
@@ -131,6 +127,7 @@ vim.api.nvim_create_user_command('MasonInstallAll', function()
     'roslyn',
     'pyright',
     'ruff',
+    'tsgo',
   }
   vim.cmd('MasonInstall ' .. table.concat(packages, ' '))
 end, {})
@@ -164,21 +161,12 @@ map({ 'n', 't' }, '<A-t>', Snacks.terminal.toggle)
 
 -- lsp
 add 'neovim/nvim-lspconfig'
-vim.lsp.enable { 'gopls', 'lua_ls', 'pyright' }
+vim.lsp.enable { 'gopls', 'lua_ls', 'pyright', 'tsgo' }
 map('n', '<leader>r', vim.lsp.buf.rename)
 map('n', '<leader>a', vim.lsp.buf.code_action)
 
 add 'seblyng/roslyn.nvim'
 require('roslyn').setup { lock_target = true, silent = true }
-
-add { source = 'pmizio/typescript-tools.nvim', depends = { 'nvim-lua/plenary.nvim' } }
-require('typescript-tools').setup {
-  on_attach = function(client)
-    client.server_capabilities.semanticTokensProvider = false
-    client.server_capabilities.documentFormattingProvider = false
-    client.server_capabilities.documentRangeFormattingProvider = false
-  end,
-}
 
 -- blink
 add {
@@ -217,13 +205,13 @@ add {
     'antoinemadec/FixCursorHold.nvim',
     'nvim-treesitter/nvim-treesitter',
 
-    'fredrikaverpil/neotest-golang',
+    -- 'fredrikaverpil/neotest-golang',
     'nsidorenco/neotest-vstest',
   },
 }
 require('neotest').setup {
   adapters = {
-    require 'neotest-golang',
+    -- require 'neotest-golang',
     require 'neotest-vstest' { dap_settings = { type = 'coreclr' } },
   },
 }
@@ -271,6 +259,16 @@ require('pqf').setup()
 add 'MagicDuck/grug-far.nvim'
 map('n', '<leader>R', '<cmd>GrugFar<cr>')
 
+-- annotations
+add 'TheNoeTrevino/haunt.nvim'
+require('haunt').setup()
+map('n', '<leader>ca', '<cmd>HauntAnnotate<cr>')
+map('n', '<leader>cd', '<cmd>HauntDelete<cr>')
+map('n', '<leader>cD', '<cmd>HauntClearAll<cr>')
+map('n', '<leader>sc', '<cmd>HauntList<cr>')
+map('n', '[c', '<cmd>HauntPrev<cr>')
+map('n', ']c', '<cmd>HauntNext<cr>')
+
 -- misc mappings
 map('n', '<Esc>', '<cmd>nohlsearch<CR>')
 map({ 'n', 'x' }, '<C-d>', '<C-d>zz')
@@ -284,6 +282,7 @@ map('n', '[v', '`<')
 map('n', ']v', '`>')
 map('i', '<C-h>', '<C-o>^')
 map('i', '<C-l>', '<C-o>$')
+map('i', ';', '<C-o>A;')
 
 -- misc settings
 vim.opt.relativenumber = true

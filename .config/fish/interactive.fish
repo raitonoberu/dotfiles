@@ -19,6 +19,7 @@ alias untar='tar -zxvf '
 alias ..='cd ..'
 
 bind ctrl-f "tmux-sessionizer"
+bind ctrl-e "nvim ."
 
 set -x FZF_DEFAULT_OPTS "
 	--color=fg:#908caa,bg:#191724,hl:#ebbcba

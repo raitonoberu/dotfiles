@@ -15,9 +15,6 @@ autoSetupRemote = true
 [core]
 attributesfile = ~/.gitattributes
 
-[diff]
-external = difft --color always --display inline
-
 [merge]
 conflictstyle = diff3
 
