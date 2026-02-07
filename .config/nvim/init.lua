@@ -125,7 +125,7 @@ vim.api.nvim_create_user_command('MasonInstallAll', function()
     'delve',
     'netcoredbg',
     'roslyn',
-    'pyright',
+    'ty',
     'ruff',
     'tsgo',
   }
@@ -137,12 +137,13 @@ add 'folke/snacks.nvim'
 require('snacks').setup {
   picker = {
     jump = { tagstack = true },
-    layout = { preset = 'vertical' },
+    layout = { preset = 'vertical', layout = { width = 0.6 } },
   },
   lazygit = {},
   terminal = {
     win = { style = 'float', border = 'solid' },
   },
+  input = {}
 }
 
 local picker = Snacks.picker
@@ -161,7 +162,7 @@ map({ 'n', 't' }, '<A-t>', Snacks.terminal.toggle)
 
 -- lsp
 add 'neovim/nvim-lspconfig'
-vim.lsp.enable { 'gopls', 'lua_ls', 'pyright', 'tsgo' }
+vim.lsp.enable { 'gopls', 'lua_ls', 'ty', 'tsgo' }
 map('n', '<leader>r', vim.lsp.buf.rename)
 map('n', '<leader>a', vim.lsp.buf.code_action)
 
@@ -172,6 +173,7 @@ require('roslyn').setup { lock_target = true, silent = true }
 add {
   source = 'saghen/blink.cmp',
   depends = {
+    "rafamadriz/friendly-snippets",
     { source = 'L3MON4D3/LuaSnip', checkout = 'v2.4.1' },
   },
   checkout = 'v1.8.0',
@@ -187,6 +189,7 @@ require('blink.cmp').setup {
   appearance = { nerd_font_variant = 'normal' },
 }
 
+require("luasnip.loaders.from_vscode").lazy_load()
 require('luasnip.loaders.from_lua').load { paths = '~/.config/nvim/snippets' }
 map({ 'i', 's' }, '<C-n>', '<Plug>luasnip-next-choice')
 map({ 'i', 's' }, '<C-p>', '<Plug>luasnip-prev-choice')
@@ -195,6 +198,8 @@ map({ 'i', 's' }, '<C-p>', '<Plug>luasnip-prev-choice')
 add 'rachartier/tiny-inline-diagnostic.nvim'
 require('tiny-inline-diagnostic').setup()
 vim.diagnostic.config { virtual_text = false }
+map('n', '[e', function() vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR }) end)
+map('n', ']e', function() vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR }) end)
 
 -- tests
 add {
@@ -205,13 +210,11 @@ add {
     'antoinemadec/FixCursorHold.nvim',
     'nvim-treesitter/nvim-treesitter',
 
-    -- 'fredrikaverpil/neotest-golang',
     'nsidorenco/neotest-vstest',
   },
 }
 require('neotest').setup {
   adapters = {
-    -- require 'neotest-golang',
     require 'neotest-vstest' { dap_settings = { type = 'coreclr' } },
   },
 }
@@ -228,12 +231,10 @@ map('n', ']t', '<cmd>Neotest jump next<cr>')
 add {
   source = 'mfussenegger/nvim-dap',
   depends = {
-    'leoluz/nvim-dap-go',
     'nicholasmata/nvim-dap-cs',
   },
 }
 add 'igorlfs/nvim-dap-view'
-require('dap-go').setup()
 require('dap-cs').setup()
 
 map('n', '<leader>ds', '<cmd>DapViewToggle<cr>')
@@ -250,6 +251,8 @@ add 'tpope/vim-sleuth'
 -- autopairs
 add 'windwp/nvim-autopairs'
 require('nvim-autopairs').setup()
+add 'windwp/nvim-ts-autotag'
+require('nvim-ts-autotag').setup()
 
 -- quickfix
 add 'yorickpeterse/nvim-pqf'
