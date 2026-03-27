@@ -143,7 +143,7 @@ require('snacks').setup {
   terminal = {
     win = { style = 'float', border = 'solid' },
   },
-  input = {}
+  input = {},
 }
 
 local picker = Snacks.picker
@@ -167,16 +167,20 @@ map('n', '<leader>r', vim.lsp.buf.rename)
 map('n', '<leader>a', vim.lsp.buf.code_action)
 
 add 'seblyng/roslyn.nvim'
-require('roslyn').setup { lock_target = true, silent = true }
+require('roslyn').setup {
+  filewatching = 'off',
+  lock_target = true,
+  silent = true,
+}
 
 -- blink
 add {
   source = 'saghen/blink.cmp',
   depends = {
-    "rafamadriz/friendly-snippets",
+    'rafamadriz/friendly-snippets',
     { source = 'L3MON4D3/LuaSnip', checkout = 'v2.4.1' },
   },
-  checkout = 'v1.8.0',
+  checkout = 'v1.10.1',
 }
 require('blink.cmp').setup {
   snippets = { preset = 'luasnip' },
@@ -189,7 +193,7 @@ require('blink.cmp').setup {
   appearance = { nerd_font_variant = 'normal' },
 }
 
-require("luasnip.loaders.from_vscode").lazy_load()
+require('luasnip.loaders.from_vscode').lazy_load()
 require('luasnip.loaders.from_lua').load { paths = '~/.config/nvim/snippets' }
 map({ 'i', 's' }, '<C-n>', '<Plug>luasnip-next-choice')
 map({ 'i', 's' }, '<C-p>', '<Plug>luasnip-prev-choice')
@@ -198,8 +202,12 @@ map({ 'i', 's' }, '<C-p>', '<Plug>luasnip-prev-choice')
 add 'rachartier/tiny-inline-diagnostic.nvim'
 require('tiny-inline-diagnostic').setup()
 vim.diagnostic.config { virtual_text = false }
-map('n', '[e', function() vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR }) end)
-map('n', ']e', function() vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR }) end)
+map('n', '[e', function()
+  vim.diagnostic.jump { count = -1, severity = vim.diagnostic.severity.ERROR }
+end)
+map('n', ']e', function()
+  vim.diagnostic.jump { count = 1, severity = vim.diagnostic.severity.ERROR }
+end)
 
 -- tests
 add {
@@ -215,7 +223,10 @@ add {
 }
 require('neotest').setup {
   adapters = {
-    require 'neotest-vstest' { dap_settings = { type = 'coreclr' } },
+    require 'neotest-vstest' {
+      dap_settings = { type = 'coreclr' },
+      timeout_ms = 30 * 60 * 1000,
+    },
   },
 }
 map('n', '<leader>ts', '<cmd>Neotest summary<cr>')
