@@ -1,18 +1,23 @@
+local function add(plugins, version)
+  if type(plugins) == 'string' then
+    plugins = { plugins }
+  end
+
+  for i, plugin in ipairs(plugins) do
+    plugins[i] = {
+      src = 'https://github.com/' .. plugin,
+      version = version and vim.version.range(version),
+    }
+  end
+
+  vim.pack.add(plugins)
+end
+
+local map = vim.keymap.set
 vim.loader.enable()
 
-local mini_path = vim.fn.stdpath 'data' .. '/site/pack/deps/start/mini.nvim'
-if not vim.uv.fs_stat(mini_path) then
-  vim.fn.system { 'git', 'clone', '--filter=blob:none', 'https://github.com/nvim-mini/mini.nvim', mini_path }
-  vim.cmd 'packadd mini.nvim'
-end
-require('mini.deps').setup()
-
-local add = MiniDeps.add
-local map = vim.keymap.set
-
 -- colorscheme
-add 'nvim-tree/nvim-web-devicons'
-add { source = 'rose-pine/neovim', name = 'rose-pine' }
+add { 'rose-pine/neovim', 'nvim-tree/nvim-web-devicons' }
 require('rose-pine').setup {
   highlight_groups = {
     StatusLine = { fg = 'rose', bg = 'rose', blend = 10 },
@@ -37,8 +42,7 @@ vim.opt.laststatus = 2
 vim.opt.statusline = ' %{expand("%:.")} %m %= %l:%c ♥  '
 
 -- treesitter
-add { source = 'nvim-treesitter/nvim-treesitter', checkout = 'main' }
-add 'MeanderingProgrammer/treesitter-modules.nvim'
+add { 'nvim-treesitter/nvim-treesitter', 'MeanderingProgrammer/treesitter-modules.nvim' }
 require('treesitter-modules').setup {
   auto_install = true,
   highlight = { enable = true },
@@ -114,6 +118,7 @@ require('mason').setup {
     'github:Crashdummyy/mason-registry',
   },
 }
+
 vim.api.nvim_create_user_command('MasonInstallAll', function()
   local packages = {
     'lua-language-server',
@@ -161,27 +166,20 @@ map({ 'n', 't' }, '<A-g>', Snacks.lazygit.open)
 map({ 'n', 't' }, '<A-t>', Snacks.terminal.toggle)
 
 -- lsp
-add 'neovim/nvim-lspconfig'
+add { 'neovim/nvim-lspconfig', 'seblyng/roslyn.nvim' }
 vim.lsp.enable { 'gopls', 'lua_ls', 'ty', 'tsgo' }
+vim.lsp.on_type_formatting.enable()
 map('n', '<leader>r', vim.lsp.buf.rename)
 map('n', '<leader>a', vim.lsp.buf.code_action)
 
-add 'seblyng/roslyn.nvim'
 require('roslyn').setup {
   filewatching = 'off',
   lock_target = true,
   silent = true,
 }
 
--- blink
-add {
-  source = 'saghen/blink.cmp',
-  depends = {
-    'rafamadriz/friendly-snippets',
-    { source = 'L3MON4D3/LuaSnip', checkout = 'v2.4.1' },
-  },
-  checkout = 'v1.10.1',
-}
+-- autocomplete
+add('saghen/blink.cmp', '*')
 require('blink.cmp').setup {
   snippets = { preset = 'luasnip' },
   keymap = {
@@ -193,6 +191,9 @@ require('blink.cmp').setup {
   appearance = { nerd_font_variant = 'normal' },
 }
 
+-- snippets
+add('L3MON4D3/LuaSnip', '*')
+add 'rafamadriz/friendly-snippets'
 require('luasnip.loaders.from_vscode').lazy_load()
 require('luasnip.loaders.from_lua').load { paths = '~/.config/nvim/snippets' }
 map({ 'i', 's' }, '<C-n>', '<Plug>luasnip-next-choice')
@@ -211,15 +212,11 @@ end)
 
 -- tests
 add {
-  source = 'nvim-neotest/neotest',
-  depends = {
-    'nvim-neotest/nvim-nio',
-    'nvim-lua/plenary.nvim',
-    'antoinemadec/FixCursorHold.nvim',
-    'nvim-treesitter/nvim-treesitter',
-
-    'nsidorenco/neotest-vstest',
-  },
+  'nvim-neotest/neotest',
+  'nvim-lua/plenary.nvim',
+  'nvim-neotest/nvim-nio',
+  'antoinemadec/FixCursorHold.nvim',
+  'nsidorenco/neotest-vstest',
 }
 require('neotest').setup {
   adapters = {
@@ -229,6 +226,7 @@ require('neotest').setup {
     },
   },
 }
+
 map('n', '<leader>ts', '<cmd>Neotest summary<cr>')
 map('n', '<leader>tr', '<cmd>Neotest run<cr>')
 map('n', '<leader>tf', '<cmd>Neotest run file<cr>')
@@ -239,30 +237,22 @@ map('n', '[t', '<cmd>Neotest jump prev<cr>')
 map('n', ']t', '<cmd>Neotest jump next<cr>')
 
 -- debug
-add {
-  source = 'mfussenegger/nvim-dap',
-  depends = {
-    'nicholasmata/nvim-dap-cs',
-  },
-}
-add 'igorlfs/nvim-dap-view'
-require('dap-cs').setup()
-
-map('n', '<leader>ds', '<cmd>DapViewToggle<cr>')
+add { 'mfussenegger/nvim-dap', 'igorlfs/nvim-dap-view', 'nicholasmata/nvim-dap-cs' }
 map('n', '<leader>dr', '<cmd>DapContinue<cr>')
 map('n', '<leader>di', '<cmd>DapStepInto<cr>')
 map('n', '<leader>dv', '<cmd>DapStepOver<cr>')
 map('n', '<leader>do', '<cmd>DapStepOut<cr>')
 map('n', '<leader>db', '<cmd>DapToggleBreakpoint<cr>')
 map('n', '<leader>dq', '<cmd>DapTerminate<cr>')
+map('n', '<leader>ds', '<cmd>DapViewToggle<cr>')
+require('dap-cs').setup()
 
 -- indent
 add 'tpope/vim-sleuth'
 
 -- autopairs
-add 'windwp/nvim-autopairs'
+add { 'windwp/nvim-autopairs', 'windwp/nvim-ts-autotag' }
 require('nvim-autopairs').setup()
-add 'windwp/nvim-ts-autotag'
 require('nvim-ts-autotag').setup()
 
 -- quickfix
