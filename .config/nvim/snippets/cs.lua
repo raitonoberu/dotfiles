@@ -1,55 +1,78 @@
 ---@diagnostic disable: undefined-global
 local tab = '    '
 
+local function guess_namespace()
+  local current_dir = vim.fn.expand '%:p:h'
+  if current_dir == '' then
+    return
+  end
+
+  local files = vim.fn.glob(current_dir .. '/*.cs', false, true)
+  for _, file in ipairs(files) do
+    local _, lines = pcall(vim.fn.readfile, file)
+    for _, line in ipairs(lines or {}) do
+      local ns = line:match '^%s*namespace%s+([%w_.]+)'
+      if ns then
+        return ns
+      end
+    end
+  end
+end
+
 return {
-  s('namespace', {
+  postfix({
+    trig = ' :=',
+    snippetType = 'autosnippet',
+  }, {
+    l('var ' .. l.POSTFIX_MATCH .. ' ='),
+  }),
+
+  s('nms', {
     t 'namespace ',
-    f(function()
-      return 'TODO'
+    d(1, function()
+      local ns = guess_namespace()
+      return ns and sn(nil, { t(ns) }) or sn(nil, { i(1, '') })
     end),
-    t { ';', '' },
+    t { ';', '', '' },
     i(0),
   }),
 
-  s('class', { -- class
-    i(1, 'public'),
-    t ' class ',
+  s('cls', {
+    t 'public class ',
     sn(nil, { p(vim.fn.expand, '%:t:r') }, { key = 'name' }),
     t '(',
-    i(2),
+    i(1),
     t { ')', '{', tab },
     i(0),
     t { '', '}' },
   }),
 
-  s('record', { -- record
-    i(1, 'public'),
-    t ' record ',
+  s('rcd', {
+    t 'public record ',
     p(vim.fn.expand, '%:t:r'),
     t { '(', tab },
     i(0),
     t { '', ');' },
   }),
 
-  s('method', { -- method
-    i(1, 'public'),
+  s('meth', {
+    i(4, 'public'),
     t ' ',
-    i(2, 'void'),
+    i(3, 'void'),
     t ' ',
-    i(3, 'Method'),
+    i(1, 'Method'),
     t '(',
-    i(4),
+    i(2),
     t { ')', '{', tab },
     i(0),
     t { '', '}' },
   }),
 
-  s('service', { -- service
-    i(1, 'public'),
-    t ' class ',
+  s('srv', {
+    t 'public class ',
     sn(nil, { p(vim.fn.expand, '%:t:r') }, { key = 'name' }),
     t '(ILog log',
-    i(2),
+    i(1),
     t { ')', '{', tab .. 'private readonly ILog log = log.ForContext<' },
     rep(k 'name'),
     t { '>();', '', tab },
@@ -57,29 +80,29 @@ return {
     t { '', '}' },
   }),
 
-  s('amethod', { -- async method
-    i(1, 'public'),
+  s('ameth', {
+    i(4, 'public'),
     t ' async Task<ApiOperationResult',
-    c(2, {
+    c(3, {
       i(1),
       sn(nil, { t '<', i(1, 'object'), t '>' }),
     }),
     t '> ',
-    i(3, 'Method'),
+    i(1, 'Method'),
     t '(',
-    i(4),
+    i(2),
     t { ')', '{', tab },
     i(0, 'return ApiOperationResult.Success();'),
     t { '', '}' },
   }),
 
-  s('result', { -- result
+  s('ares', {
     t 'var ',
-    i(1, 'result', { key = 'var' }),
+    i(3, 'result', { key = 'var' }),
     t ' = await ',
-    i(2, 'Method'),
+    i(1, 'Method'),
     t '(',
-    i(3),
+    i(2),
     t { ');', 'if (' },
     rep(k 'var'),
     t { '.IsFail)', '' },
@@ -106,7 +129,7 @@ return {
     i(0),
   }),
 
-  s('iferr', { -- if error
+  s('iferr', {
     t 'if (',
     i(1, 'result'),
     t { '.IsFail)', tab .. 'return ' },
@@ -115,7 +138,7 @@ return {
     i(0),
   }),
 
-  s('fixture', { -- fixture
+  s('fix', {
     t { '[TestFixture]', 'public class ' },
     p(vim.fn.expand, '%:t:r'),
     t { '', '{', tab },
@@ -123,7 +146,7 @@ return {
     t { '', '}' },
   }),
 
-  s('test', { -- test
+  s('test', {
     t { '[Test]', 'public void Should_' },
     i(1),
     t { '()', '{', tab },
@@ -131,7 +154,7 @@ return {
     t { '', '}' },
   }),
 
-  s('atest', { -- async test
+  s('atest', {
     t { '[Test]', 'public async Task Should_' },
     i(1),
     t { '()', '{', tab },

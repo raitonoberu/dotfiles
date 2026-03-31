@@ -194,8 +194,12 @@ require('blink.cmp').setup {
 -- snippets
 add('L3MON4D3/LuaSnip', '*')
 add 'rafamadriz/friendly-snippets'
+require('luasnip').setup { enable_autosnippets = true }
 require('luasnip.loaders.from_vscode').lazy_load()
-require('luasnip.loaders.from_lua').load { paths = '~/.config/nvim/snippets' }
+require('luasnip.loaders.from_lua').lazy_load {
+  paths = '~/.config/nvim/snippets',
+  default_priority = 5000,
+}
 map({ 'i', 's' }, '<C-n>', '<Plug>luasnip-next-choice')
 map({ 'i', 's' }, '<C-p>', '<Plug>luasnip-prev-choice')
 
