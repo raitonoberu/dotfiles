@@ -1,0 +1,252 @@
+#!/usr/bin/env -S uv run --script
+# vim: ft=python
+# /// script
+# dependencies = ["pynvim"]
+# ///
+
+import json
+import os
+import sys
+import pynvim
+
+SNIPPET_CTX = 1
+LSP_WAIT_MS = 2000
+
+
+def usage():
+    prog = sys.argv[0]
+    print(f"usage: {prog} <ref|def> <file:line> <symbol>", file=sys.stderr)
+    print(f"       {prog} diag <file>", file=sys.stderr)
+    sys.exit(1)
+
+
+def die(message):
+    print("error:", message, file=sys.stderr)
+    sys.exit(1)
+
+
+def exec_lua(nvim, lua_code):
+    raw = nvim.exec_lua(lua_code)
+    return json.loads(raw)
+
+
+def parse_location(loc):
+    parts = loc.rsplit(":", 1)
+    if len(parts) != 2:
+        raise ValueError(f"bad location: {loc}")
+    filepath, line_str = parts
+    return filepath, int(line_str)
+
+
+def read_snippet(path, line):
+    try:
+        with open(path, "r") as f:
+            lines = f.readlines()
+    except OSError:
+        return []
+
+    idx = line - 1
+    start = max(0, idx - SNIPPET_CTX)
+    end = min(len(lines), idx + SNIPPET_CTX + 1)
+    return lines[start:end]
+
+
+def format_result(path, line):
+    snippet = read_snippet(path, line)
+    out = [f"{path}:{line}"]
+    for s in snippet:
+        out.append("    " + s.rstrip("\n"))
+    return "\n".join(out)
+
+
+def format_diagnostic(path, line, message):
+    snippet = read_snippet(path, line)
+    out = [f"{path}:{line}", f"    {message}"]
+    for s in snippet:
+        out.append("    " + s.rstrip("\n"))
+    return "\n".join(out)
+
+
+def attach_nvim():
+    socket = os.environ.get("NVIM") or os.environ.get("NVIM_LISTEN_ADDRESS", "")
+    if not socket:
+        die("$NVIM or $NVIM_LISTEN_ADDRESS not set")
+
+    try:
+        return pynvim.attach("socket", path=socket)
+    except Exception as exc:
+        die(f"failed to attach to nvim: {exc}")
+
+
+def find_symbol_column(text, symbol):
+    col = text.find(symbol)
+    if col == -1:
+        raise ValueError(f"symbol '{symbol}' not found")
+    return col
+
+
+def extract_locations(data):
+    responses = data.get("result", [])
+    if isinstance(responses, dict):
+        responses = responses.values()
+
+    locations: list[tuple[str, int]] = []
+    for resp in responses:
+        if not resp or "result" not in resp or not resp["result"]:
+            continue
+        for item in resp["result"]:
+            uri = item.get("uri") or item.get("targetUri")
+            if not uri:
+                continue
+            path = uri.removeprefix("file://")
+            rng = item.get("range") or item.get("targetRange")
+            loc_line = rng["start"]["line"] + 1 if rng else 1
+            locations.append((path, loc_line))
+    return locations
+
+
+def extract_diagnostics(data):
+    items = data.get("diagnostics", [])[:5]
+    results: list[tuple[str, int, str]] = []
+    for item in items:
+        path = item.get("bufname", "")
+        line = item.get("lnum", 0) + 1
+        message = item.get("message", "")
+        results.append((path, line, message))
+    return results
+
+
+def deduplicate_locations(locations):
+    seen: set[tuple[str, int]] = set()
+    unique: list[tuple[str, int]] = []
+    for path, line in locations:
+        key = (path, line)
+        if key not in seen:
+            seen.add(key)
+            unique.append((path, line))
+    return unique
+
+
+def wait_lsp(filepath):
+    return f"""
+local buf = vim.fn.bufadd("{filepath}")
+vim.fn.bufload(buf)
+local ft = vim.bo[buf].filetype
+if ft == "" then
+    local detected = vim.filetype.match({{ filename = "{filepath}" }})
+    if detected then
+        vim.api.nvim_buf_set_option(buf, "filetype", detected)
+    end
+end
+local clients
+vim.wait({LSP_WAIT_MS}, function()
+    clients = vim.lsp.get_clients({{ bufnr = buf }})
+    return #clients > 0
+end, 50)
+if #clients == 0 then
+    return vim.json.encode({{ error = "no lsp client attached to " .. "{filepath}" }})
+end
+"""
+
+
+def run_diag(nvim, filepath):
+    lua = (
+        wait_lsp(filepath)
+        + f"""
+vim.api.nvim_buf_call(buf, function() vim.cmd("edit!") end)
+local diagnostics
+vim.wait({LSP_WAIT_MS}, function()
+    diagnostics = vim.diagnostic.get(buf, {{ severity = vim.diagnostic.severity.ERROR }})
+    return #diagnostics > 0
+end, 50)
+for _, d in ipairs(diagnostics) do
+    d.bufname = vim.api.nvim_buf_get_name(d.bufnr)
+end
+return vim.json.encode({{ diagnostics = diagnostics }})
+"""
+    )
+    data = exec_lua(nvim, lua)
+    if "error" in data:
+        die(data["error"])
+    diagnostics = extract_diagnostics(data)
+    if not diagnostics:
+        print("no results found.")
+        return
+    out = [format_diagnostic(path, line, msg) for path, line, msg in diagnostics]
+    print("\n-----\n".join(out))
+
+
+def run_lsp(nvim, filepath, row, col, method):
+    context_lua = (
+        "context = { includeDeclaration = false }"
+        if method == "textDocument/references"
+        else ""
+    )
+    lua = (
+        wait_lsp(filepath)
+        + f"""
+local uri = vim.uri_from_bufnr(buf)
+local params = {{
+    textDocument = {{ uri = uri }},
+    position = {{ line = {row}, character = {col} }},
+    {context_lua}
+}}
+local result = vim.lsp.buf_request_sync(buf, "{method}", params, 5000)
+return vim.json.encode({{ result = result }})
+"""
+    )
+    data = exec_lua(nvim, lua)
+    if "error" in data:
+        die(data["error"])
+    locations = extract_locations(data)
+    unique = deduplicate_locations(locations)
+    if not unique:
+        print("no results found.")
+        return
+    out = [format_result(path, line) for path, line in unique]
+    print("\n-----\n".join(out))
+
+
+def parse_symbol_args(loc, symbol):
+    filepath, line = parse_location(loc)
+    row = line - 1
+    with open(filepath, "r") as f:
+        lines = f.readlines()
+    if not (0 <= row < len(lines)):
+        die(f"line {line} out of range (file has {len(lines)} lines)")
+    col = find_symbol_column(lines[row], symbol)
+    return filepath, row, col
+
+
+def main():
+    if len(sys.argv) < 3:
+        usage()
+    action = sys.argv[1]
+
+    nvim = attach_nvim()
+    try:
+        if action == "diag":
+            if len(sys.argv) != 3:
+                usage()
+            run_diag(nvim, sys.argv[2])
+        elif action in ("ref", "def"):
+            if len(sys.argv) != 4:
+                usage()
+            try:
+                filepath, row, col = parse_symbol_args(sys.argv[2], sys.argv[3])
+            except ValueError as exc:
+                die(str(exc))
+            method = (
+                "textDocument/references"
+                if action == "ref"
+                else "textDocument/definition"
+            )
+            run_lsp(nvim, filepath, row, col, method)
+        else:
+            usage()
+    finally:
+        nvim.close()
+
+
+if __name__ == "__main__":
+    main()

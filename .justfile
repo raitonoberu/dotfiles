@@ -21,6 +21,7 @@ install-base:
 		tmux \
 		ripgrep \
 		stow \
+		uv \
 		tree-sitter-cli
 
 pacman-cleanup:
