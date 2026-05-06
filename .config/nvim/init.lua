@@ -10,7 +10,7 @@ local function add(plugins, version)
     }
   end
 
-  vim.pack.add(plugins)
+  vim.pack.add(plugins, { confirm = false })
 end
 
 local map = vim.keymap.set
@@ -33,12 +33,10 @@ require('mini.basics').setup { mappings = { windows = true } }
 require('mini.comment').setup()
 require('mini.cursorword').setup { delay = 400 }
 require('mini.diff').setup()
-require('mini.git').setup()
 require('mini.jump').setup()
 require('mini.move').setup()
 
 -- statusline
-vim.opt.laststatus = 2
 vim.opt.statusline = ' %{expand("%:.")} %m %= %l:%c ♥  '
 
 -- treesitter
@@ -152,7 +150,7 @@ require('snacks').setup {
 }
 
 local picker = Snacks.picker
-map({ 'n', 'x' }, '<leader><leader>', picker.grep)
+map('n', '<leader><leader>', picker.grep)
 map('n', '<leader>sf', picker.files)
 map('n', '<leader>sw', picker.grep_word)
 map('n', '<leader>sr', picker.resume)
@@ -276,6 +274,12 @@ map('n', '<leader>cD', '<cmd>HauntClearAll<cr>')
 map('n', '<leader>sc', '<cmd>HauntList<cr>')
 map('n', '[c', '<cmd>HauntPrev<cr>')
 map('n', ']c', '<cmd>HauntNext<cr>')
+
+-- pi
+add 'pablopunk/pi.nvim'
+require('pi').setup()
+map('n', '<leader>q', '<cmd>PiAsk<cr>')
+map('x', '<leader>q', '<cmd>PiAskSelection<cr>')
 
 -- misc mappings
 map('n', '<Esc>', '<cmd>nohlsearch<CR>')
