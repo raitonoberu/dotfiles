@@ -1,4 +1,6 @@
-local function add(plugins, version)
+local map = vim.keymap.set
+
+local add = function(plugins, version)
   if type(plugins) == 'string' then
     plugins = { plugins }
   end
@@ -13,7 +15,6 @@ local function add(plugins, version)
   vim.pack.add(plugins, { confirm = false })
 end
 
-local map = vim.keymap.set
 vim.loader.enable()
 
 -- colorscheme
@@ -126,8 +127,6 @@ vim.api.nvim_create_user_command('MasonInstallAll', function()
     'goimports',
     'prettierd',
     'delve',
-    'netcoredbg',
-    'roslyn',
     'ty',
     'ruff',
     'tsgo',
@@ -152,10 +151,13 @@ require('snacks').setup {
 local picker = Snacks.picker
 map('n', '<leader><leader>', picker.grep)
 map('n', '<leader>sf', picker.files)
-map('n', '<leader>sw', picker.grep_word)
 map('n', '<leader>sr', picker.resume)
 map('n', '<leader>sd', picker.diagnostics)
 map('n', '<leader>sg', picker.git_diff)
+map('x', '<leader>s', picker.grep_word)
+map('n', '<leader>sv', function()
+  picker.grep { search = vim.fn.getreg('+'):gsub('\n', ' ') }
+end)
 map('n', 'gd', picker.lsp_definitions)
 map('n', 'gr', picker.lsp_references)
 map('n', 'gi', picker.lsp_implementations)
@@ -163,18 +165,38 @@ map('n', 'gi', picker.lsp_implementations)
 map({ 'n', 't' }, '<A-g>', Snacks.lazygit.open)
 map({ 'n', 't' }, '<A-t>', Snacks.terminal.toggle)
 
+-- debug
+add { 'mfussenegger/nvim-dap', 'igorlfs/nvim-dap-view' }
+map('n', '<leader>dr', '<cmd>DapContinue<cr>')
+map('n', '<leader>di', '<cmd>DapStepInto<cr>')
+map('n', '<leader>dv', '<cmd>DapStepOver<cr>')
+map('n', '<leader>do', '<cmd>DapStepOut<cr>')
+map('n', '<leader>db', '<cmd>DapToggleBreakpoint<cr>')
+map('n', '<leader>dq', '<cmd>DapTerminate<cr>')
+map('n', '<leader>ds', '<cmd>DapViewToggle<cr>')
+
 -- lsp
-add { 'neovim/nvim-lspconfig', 'seblyng/roslyn.nvim' }
+add 'neovim/nvim-lspconfig'
 vim.lsp.enable { 'gopls', 'lua_ls', 'ty', 'tsgo' }
 vim.lsp.on_type_formatting.enable()
 map('n', '<leader>r', vim.lsp.buf.rename)
 map('n', '<leader>a', vim.lsp.buf.code_action)
 
-require('roslyn').setup {
-  filewatching = 'off',
-  lock_target = true,
-  silent = true,
+add 'GustavEikaas/easy-dotnet.nvim'
+require('easy-dotnet').setup {
+  test_runner = { neotest_integration = true },
+  external_terminal = { command = 'tmux', args = { 'new-window' } },
+  auto_bootstrap_namespace = { type = 'file_scoped' },
+  lsp = {
+    config = {
+      settings = {
+        ['csharp|code_lens'] = { dotnet_enable_references_code_lens = false },
+      },
+    },
+  },
 }
+map('n', '<leader>b', '<cmd>Dotnet build quickfix<cr>')
+map('n', '<leader>B', '<cmd>Dotnet build solution<cr>')
 
 -- autocomplete
 add('saghen/blink.cmp', '*')
@@ -218,14 +240,10 @@ add {
   'nvim-lua/plenary.nvim',
   'nvim-neotest/nvim-nio',
   'antoinemadec/FixCursorHold.nvim',
-  'nsidorenco/neotest-vstest',
 }
 require('neotest').setup {
   adapters = {
-    require 'neotest-vstest' {
-      dap_settings = { type = 'coreclr' },
-      timeout_ms = 30 * 60 * 1000,
-    },
+    require 'easy-dotnet.neotest',
   },
 }
 
@@ -237,17 +255,6 @@ map('n', '<leader>to', '<cmd>Neotest output<cr>')
 map('n', '<leader>tq', '<cmd>Neotest stop<cr>')
 map('n', '[t', '<cmd>Neotest jump prev<cr>')
 map('n', ']t', '<cmd>Neotest jump next<cr>')
-
--- debug
-add { 'mfussenegger/nvim-dap', 'igorlfs/nvim-dap-view', 'nicholasmata/nvim-dap-cs' }
-map('n', '<leader>dr', '<cmd>DapContinue<cr>')
-map('n', '<leader>di', '<cmd>DapStepInto<cr>')
-map('n', '<leader>dv', '<cmd>DapStepOver<cr>')
-map('n', '<leader>do', '<cmd>DapStepOut<cr>')
-map('n', '<leader>db', '<cmd>DapToggleBreakpoint<cr>')
-map('n', '<leader>dq', '<cmd>DapTerminate<cr>')
-map('n', '<leader>ds', '<cmd>DapViewToggle<cr>')
-require('dap-cs').setup()
 
 -- indent
 add 'tpope/vim-sleuth'
@@ -297,6 +304,7 @@ map('i', '<C-l>', '<C-o>$')
 map('i', ';', '<C-o>A;')
 
 -- misc settings
+map('n', '<leader>u', vim.pack.update)
 vim.opt.relativenumber = true
 vim.opt.swapfile = false
 vim.opt.scrolloff = 8
