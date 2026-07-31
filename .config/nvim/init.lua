@@ -130,6 +130,7 @@ vim.api.nvim_create_user_command('MasonInstallAll', function()
     'ty',
     'ruff',
     'tsgo',
+    'typos-lsp'
   }
   vim.cmd('MasonInstall ' .. table.concat(packages, ' '))
 end, {})
@@ -177,7 +178,7 @@ map('n', '<leader>ds', '<cmd>DapViewToggle<cr>')
 
 -- lsp
 add 'neovim/nvim-lspconfig'
-vim.lsp.enable { 'gopls', 'lua_ls', 'ty', 'tsgo' }
+vim.lsp.enable { 'gopls', 'lua_ls', 'ty', 'tsgo', 'typos_lsp' }
 vim.lsp.on_type_formatting.enable()
 map('n', '<leader>r', vim.lsp.buf.rename)
 map('n', '<leader>a', vim.lsp.buf.code_action)

@@ -1,5 +1,4 @@
 stow:
-	rm ~/.config/fish/fish_variables
 	stow -R -v --no-folding -d ~/dotfiles -t ~ .
 
 unstow:

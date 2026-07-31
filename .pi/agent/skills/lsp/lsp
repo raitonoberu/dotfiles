@@ -10,7 +10,8 @@ import sys
 import pynvim
 
 SNIPPET_CTX = 1
-LSP_WAIT_MS = 2000
+LSP_WAIT_MS = 5000
+DIAG_WAIT_MS = 1000
 
 
 def usage():
@@ -153,9 +154,14 @@ def run_diag(nvim, filepath):
     lua = (
         wait_lsp(filepath)
         + f"""
-vim.api.nvim_buf_call(buf, function() vim.cmd("edit!") end)
+for _, client in ipairs(vim.lsp.get_clients({{ bufnr = buf }})) do
+    if client:supports_method("textDocument/diagnostic") then
+        local params = {{ textDocument = vim.lsp.util.make_text_document_params(buf) }}
+        client:request("textDocument/diagnostic", params, nil, buf)
+    end
+end
 local diagnostics
-vim.wait({LSP_WAIT_MS}, function()
+vim.wait({DIAG_WAIT_MS}, function()
     diagnostics = vim.diagnostic.get(buf, {{ severity = vim.diagnostic.severity.ERROR }})
     return #diagnostics > 0
 end, 50)
