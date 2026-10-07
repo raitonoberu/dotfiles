@@ -20,13 +20,6 @@ local function guess_namespace()
 end
 
 return {
-  postfix({
-    trig = ' :=',
-    snippetType = 'autosnippet',
-  }, {
-    l('var ' .. l.POSTFIX_MATCH .. ' ='),
-  }),
-
   s('nms', {
     t 'namespace ',
     d(1, function()

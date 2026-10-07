@@ -215,7 +215,7 @@ require('blink.cmp').setup {
 -- snippets
 add('L3MON4D3/LuaSnip', '*')
 add 'rafamadriz/friendly-snippets'
-require('luasnip').setup { enable_autosnippets = true }
+require('luasnip').setup()
 require('luasnip.loaders.from_vscode').lazy_load()
 require('luasnip.loaders.from_lua').lazy_load {
   paths = '~/.config/nvim/snippets',
@@ -283,11 +283,20 @@ map('n', '<leader>sc', '<cmd>HauntList<cr>')
 map('n', '[c', '<cmd>HauntPrev<cr>')
 map('n', ']c', '<cmd>HauntNext<cr>')
 
--- pi
-add 'pablopunk/pi.nvim'
-require('pi').setup()
-map('n', '<leader>q', '<cmd>PiAsk<cr>')
-map('x', '<leader>q', '<cmd>PiAskSelection<cr>')
+-- sidekick
+add 'folke/sidekick.nvim'
+require('sidekick').setup({
+  nes = { enabled = false },
+  cli = {
+    mux = { enabled = true, create = "window" }
+  }
+})
+map('x', '<leader>q', '<cmd>Sidekick cli send msg="{this}" name=pi<cr>')
+map('n', '<leader>q', '<cmd>Sidekick cli send msg="{file}" name=pi<cr>')
+map('n', '<leader>cq', function()
+  local msg = require("haunt.sidekick").get_locations()
+  require("sidekick.cli").send({msg=msg, name="pi"})
+end)
 
 -- misc mappings
 map('n', '<Esc>', '<cmd>nohlsearch<CR>')
